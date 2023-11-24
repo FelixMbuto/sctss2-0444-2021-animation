@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="notification" id="notification">
+    <img src="dropdown.gif" alt="Dropdown Animation">
+    <audio id="alarm" src="alarm.mp3"></audio>
+  </div>
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      var audio = document.getElementById("alarm");
+      var img = document.querySelector(".notification img");
+
+      // Animation
+      img.style.animation = "bounce 2s infinite";
+
+      // Play audio using the Web Audio API on user interaction
+      document.getElementById("notification").addEventListener("click", function() {
+        var context = new AudioContext();
+        var source = context.createBufferSource();
+        var audioBuffer;
+
+        // Fetch the audio file
+        fetch('sauti.mp3')
+          .then(response => response.arrayBuffer())
+          .then(data => context.decodeAudioData(data))
+          .then(buffer => {
+            audioBuffer = buffer;
+            source.buffer = audioBuffer;
+            source.connect(context.destination);
+            source.start(0);
+          })
+          .catch(error => console.error(error));
+
+        // Stop animation after playing audio
+        img.style.animation = "none";
+      });
+    });
+  </script>
+</body>
+</html>
